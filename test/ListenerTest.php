@@ -85,11 +85,12 @@ class ListenerTest extends PHPUnit_Framework_TestCase
 
 		// Use League\PHPUnitCoverageListener coveralls informations
 		$listener->collectAndSendCoverage(array(
-			'hook' => $hook,
-			'namespace' => 'League\PHPUnitCoverageListener',
-			'repo_token' => 'XKUga6etuxSWYPXJ0lAiDyHM2jbKPQAKC',
-			'target_url' => 'http://phpunit-coverage-listener.taufanaditya.com/hook.php',
-			'coverage_dir' => realpath(__DIR__.'/Mocks/data/'.$service),
+                                              'hook' => $hook,
+                                              'namespace' => 'League\PHPUnitCoverageListener',
+                                              'repo_token' => 'XKUga6etuxSWYPXJ0lAiDyHM2jbKPQAKC',
+                                              'target_url' => 'http://phpunit-coverage-listener.taufanaditya.com/hook.php',
+                                              'coverage_dir' => realpath(
+                                                  __DIR__ . '/Mocks/data/' .$service),
 		));
 
 		$output = $listener->getPrinter()->output;
