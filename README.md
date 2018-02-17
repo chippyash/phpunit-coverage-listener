@@ -1,10 +1,16 @@
 # PHPUnit Coverage Listener
 
+This is a fork of the [original PHPLeague library](https://github.com/thephpleague/phpunit-coverage-listener)
+and it provides additional functionality (in particular, the ability to send the coverage
+file as XML instead of Json) and has some code tidying.
+
 [![Build Status](https://travis-ci.org/thephpleague/phpunit-coverage-listener.png)](https://travis-ci.org/thephpleague/phpunit-coverage-listener) [![Dependencies Status](https://depending.in/thephpleague/phpunit-coverage-listener.png)](http://depending.in/thephpleague/phpunit-coverage-listener) [![Coverage Status](https://coveralls.io/repos/thephpleague/phpunit-coverage-listener/badge.png?branch=master)](https://coveralls.io/r/thephpleague/phpunit-coverage-listener?branch=master) 
 
 [![Latest Stable Version](https://poser.pugx.org/league/phpunit-coverage-listener/v/stable.png)](https://packagist.org/packages/league/phpunit-coverage-listener) 
 
 [![Total Downloads](https://poser.pugx.org/league/phpunit-coverage-listener/downloads.png)](https://packagist.org/packages/league/phpunit-coverage-listener)
+
+[Test Contract](https://github.com/chippyash/phpunit-coverage-listener/blob/master/docs/Test-Contract.md)
 
 PHPUnit Coverage Listener is a utility library that allow you to process the PHPUnit 
 code-coverage information and send it into some remote location via cURL.
@@ -231,20 +237,20 @@ within the listener arguments array directive.
 Changelog
 ---------
 
-[See the changelog file](https://github.com/thephpleague/phpunit-coverage-listener/blob/master/CHANGELOG.md)
+[See the changelog file](https://github.com/chippyash/phpunit-coverage-listener/blob/master/CHANGELOG.md)
 
 Contributing
 ------------
 
-Please see [CONTRIBUTING](https://github.com/thephpleague/phpunit-coverage-listener/blob/master/CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](https://github.com/chippyash/phpunit-coverage-listener/blob/master/CONTRIBUTING.md) for details.
 
 Support
 -------
 
-Bugs and feature request are tracked on [GitHub](https://github.com/thephpleague/phpunit-coverage-listener/issues)
+Bugs and feature request are tracked on [GitHub](https://github.com/chippyash/phpunit-coverage-listener/issues)
 
 License
 -------
 
 PHPUnit Coverage Listener is released under the MIT License. See the bundled
-[LICENSE](https://github.com/thephpleague/phpunit-coverage-listener/blob/master/LICENSE) file for details.
+[LICENSE](https://github.com/chipyash/phpunit-coverage-listener/blob/master/LICENSE) file for details.

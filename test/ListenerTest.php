@@ -1,12 +1,12 @@
 <?php
 namespace League\PHPUnitCoverageListener\Tests;
 
+use League\PHPUnitCoverageListener\Hook\Circle;
+use League\PHPUnitCoverageListener\Hook\Travis;
 use League\PHPUnitCoverageListener\Listener;
 use League\PHPUnitCoverageListener\Printer\ArrayOut;
-use League\PHPUnitCoverageListener\Hook\Travis;
-use League\PHPUnitCoverageListener\Hook\Circle;
 use League\PHPUnitCoverageListener\Tests\Mocks\MockHook;
-use \PHPUnit_Framework_TestCase;
+use PHPUnit_Framework_TestCase;
 
 /**
  * Listener class test
@@ -26,14 +26,12 @@ class ListenerTest extends PHPUnit_Framework_TestCase
 	public function testInvalidPrinter()
 	{
 		$this->setExpectedException('RuntimeException', 'Invalid printer class');
-		$listener = new Listener(array('printer' => new \stdClass()));
+		$listener = new Listener(['printer' => new \stdClass()]);
 	}
 
 	public function testIntegrity()
 	{
-		$listener = new Listener(array(
-			'printer' => new ArrayOut
-		), false);
+		$listener = new Listener(['printer' => new ArrayOut], false);
 
 		$this->assertInstanceOf('League\PHPUnitCoverageListener\ListenerInterface', $listener);
 		$this->assertObjectHasAttribute('printer', $listener);
@@ -42,12 +40,10 @@ class ListenerTest extends PHPUnit_Framework_TestCase
 
 	public function testHandler()
 	{
-		$listener = new Listener(array(
-			'printer' => new ArrayOut
-		), false);
+		$listener = new Listener(['printer' => new ArrayOut], false);
 
 		// Test writer
-		$listener->handle(array('send' => false));
+		$listener->handle(['send' => false]);
 
 		$output = $listener->getPrinter()->output;
 
@@ -56,7 +52,7 @@ class ListenerTest extends PHPUnit_Framework_TestCase
 		$this->assertContains('Done', $output[1]);
 
 		// Test sender
-		$listener->handle(array());
+		$listener->handle([]);
 
 		$output = $listener->getPrinter()->output;
 
@@ -78,19 +74,20 @@ class ListenerTest extends PHPUnit_Framework_TestCase
 			$hook = new MockHook();
 		}
 
-		$listener = new Listener(array(
-			'printer' => new ArrayOut
-		), false);
+		$listener = new Listener(['printer' => new ArrayOut], false);
 
 		// Use League\PHPUnitCoverageListener coveralls informations
-		$listener->collectAndSendCoverage(array(
-                                              'hook' => $hook,
-                                              'namespace' => 'League\PHPUnitCoverageListener',
-                                              'repo_token' => 'XKUga6etuxSWYPXJ0lAiDyHM2jbKPQAKC',
-                                              'target_url' => 'http://phpunit-coverage-listener.taufanaditya.com/hook.php',
-                                              'coverage_dir' => realpath(
-                                                  __DIR__ . '/Mocks/data/' .$service),
-		));
+        $listener->collectAndSendCoverage(
+            [
+                'hook'         => $hook,
+                'namespace'    => 'League\PHPUnitCoverageListener',
+                'repo_token'   => 'XKUga6etuxSWYPXJ0lAiDyHM2jbKPQAKC',
+                'target_url'   => 'http://phpunit-coverage-listener.taufanaditya.com/hook.php',
+                'coverage_dir' => realpath(
+                    __DIR__ . '/Mocks/data/' . $service
+                ),
+            ]
+        );
 
 		$output = $listener->getPrinter()->output;
 

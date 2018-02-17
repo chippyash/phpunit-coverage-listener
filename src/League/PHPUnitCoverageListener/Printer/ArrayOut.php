@@ -14,7 +14,7 @@ class ArrayOut implements PrinterInterface
     /**
      * @var array Output array
      */
-    public $output = array();
+    public $output = [];
 
     /**
      *{@inheritdoc}

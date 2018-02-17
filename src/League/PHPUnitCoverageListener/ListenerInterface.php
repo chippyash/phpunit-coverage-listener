@@ -19,7 +19,7 @@ interface ListenerInterface
      *
      * @param array Argument that sent from phpunit.xml
      */
-    public function __construct($args = array());
+    public function __construct($args = []);
 
     /**
      * Printer getter

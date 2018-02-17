@@ -28,9 +28,7 @@ class CircleTest extends PHPUnit_Framework_TestCase
 		$_ENV['CIRCLE_BUILD_NUM'] = 'some-fake-id';
 
 		// Payload data
-		$data = new Collection(array(
-			'repo_token' => 's3cr3t',
-		));
+		$data = new Collection(['repo_token' => 's3cr3t']);
 
 		$this->assertTrue($data->offsetExists('repo_token'));
 
@@ -59,9 +57,7 @@ class CircleTest extends PHPUnit_Framework_TestCase
 	public function testAfterCollectCallback()
 	{
 		// Payload data
-		$data = new Collection(array(
-			'repo_token' => 's3cr3t',
-		));
+		$data = new Collection(['repo_token' => 's3cr3t']);
 
 		$this->assertTrue($data->offsetExists('repo_token'));
 

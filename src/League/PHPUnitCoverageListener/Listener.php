@@ -36,7 +36,7 @@ class Listener implements ListenerInterface
      *
      * @throws RuntimeException
      */
-    public function __construct($args = array(), $boot = true)
+    public function __construct($args = [], $boot = true)
     {
         // Get printer
         $this->ensurePrinter($args);
@@ -171,7 +171,7 @@ class Listener implements ListenerInterface
             if (function_exists('curl_file_create')) {
                 $payload = curl_file_create('json_file', 'application/json', $coverage_output);
             } else {
-                $payload = array('json_file'=>'@'.$coverage_output);
+                $payload = ['json_file'=>'@'.$coverage_output];
             }
 
             $ch = curl_init(); 
@@ -197,7 +197,7 @@ class Listener implements ListenerInterface
      * @param array
      * @return bool
      */
-    protected function valid($args = array())
+    protected function valid($args = [])
     {
          return array_key_exists('repo_token', $args) 
             && array_key_exists('target_url', $args)
@@ -234,16 +234,18 @@ class Listener implements ListenerInterface
      *
      * @throws RuntimeException
      */
-    protected function collect(SimpleXMLElement $coverage, $args = array())
+    protected function collect(SimpleXMLElement $coverage, $args = [])
     {
     	extract($args);
 
-    	$data = new Collection(array(
-            'repo_token' => $repo_token,
-            'source_files' => serialize([]),
-            'run_at' => gmdate('Y-m-d H:i:s -0000'),
-            'git' => serialize($this->collectFromGit()->toArray()),
-        ));
+    	$data = new Collection(
+    	    [
+                'repo_token' => $repo_token,
+                'source_files' => serialize([]),
+                'run_at' => gmdate('Y-m-d H:i:s -0000'),
+                'git' => serialize($this->collectFromGit()->toArray()),
+            ]
+        );
 
  		// Before collect hook
      	if ( ! empty($this->hook)) {
@@ -276,9 +278,11 @@ class Listener implements ListenerInterface
             foreach ($coverage->project->file as $file) {
                 $this->printer->printOut('Checking:'.$file['name']);
 
-                $sourceArray->add(array(
-                    md5($file['name']) => $this->collectFromFile($file, $namespace)
-                ));
+                $sourceArray->add(
+                    [
+                        md5($file['name']) => $this->collectFromFile($file, $namespace)
+                    ]
+                );
             }
         }
         // @codeCoverageIgnoreEnd
@@ -317,7 +321,7 @@ class Listener implements ListenerInterface
         // Initial return values
         $name = '';
         $source = '';
-        $coverage = array();
+        $coverage = [];
 
         // #1 Get the relative file name
         $pathComponents = explode($currentDir, $file['name']);
@@ -420,7 +424,7 @@ class Listener implements ListenerInterface
                             'committer_name', 'committer_email', 'message'))]);
 
             // Get remotes information
-            $remotes = array();
+            $remotes = [];
             $configRaw = self::execute('cd '.$this->getDirectory().';git config --local -l');
             array_walk($configRaw,function($v) use(&$remotes)
             {
@@ -467,7 +471,7 @@ class Listener implements ListenerInterface
      */
     protected static function execute($command)
     {
-        $res = array();
+        $res = [];
 
         ob_start();
         passthru($command, $success);
