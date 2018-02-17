@@ -1,7 +1,6 @@
 <?php namespace League\PHPUnitCoverageListener\Tests\Hook;
 
-use League\PHPUnitCoverageListener\Collection;
-use League\PHPUnitCoverageListener\HookInterface;
+use Monad\Collection;
 use League\PHPUnitCoverageListener\Hook\Travis;
 use \PHPUnit_Framework_TestCase;
 
@@ -31,21 +30,21 @@ class TravisTest extends PHPUnit_Framework_TestCase
 			'repo_token' => 's3cr3t',
 		));
 
-		$this->assertTrue($data->has('repo_token'));
+		$this->assertTrue($data->offsetExists('repo_token'));
 
 		$travis = new Travis();
 
 		$data = $travis->beforeCollect($data);
 
 		// Repo token will removed
-		$this->assertFalse($data->has('repo_token'));
+		$this->assertFalse($data->offsetExists('repo_token'));
 
 		// And Travis specific keys will be added
 		// with above data assigned respectively
-		$this->assertTrue($data->has('service_name'));
-		$this->assertTrue($data->has('service_job_id'));
+		$this->assertTrue($data->offsetExists('service_name'));
+		$this->assertTrue($data->offsetExists('service_job_id'));
 
-		$values = $data->all();
+		$values = $data->toArray();
 
 		$this->assertEquals('travis-ci', $values['service_name']);
 		$this->assertEquals('some-fake-id', $values['service_job_id']);
@@ -61,13 +60,13 @@ class TravisTest extends PHPUnit_Framework_TestCase
 			'repo_token' => 's3cr3t',
 		));
 
-		$this->assertTrue($data->has('repo_token'));
+		$this->assertTrue($data->offsetExists('repo_token'));
 
 		// Nothing happens on after callback
 		$travis = new Travis();
 
 		$data = $travis->afterCollect($data);
 
-		$this->assertTrue($data->has('repo_token'));
+		$this->assertTrue($data->offsetExists('repo_token'));
 	}
 }

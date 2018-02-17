@@ -2,7 +2,7 @@
 <coverage generated="1374862677">
   <project timestamp="1374862677">
     <package name="League\PHPUnitCoverageListener">
-      <file name="/home/ubuntu/phpunit-coverage-listener/src/League/PHPUnitCoverageListener/Collection.php">
+      <file name="/home/ubuntu/phpunit-coverage-listener/src/League/PHPUnitCoverageListener/Listener.php">
         <class name="Collection" namespace="League\PHPUnitCoverageListener">
           <metrics methods="8" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="12" elements="20" coveredelements="20"/>
         </class>

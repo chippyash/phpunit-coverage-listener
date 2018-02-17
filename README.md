@@ -1,10 +1,18 @@
-PHPUnit Coverage Listener
-=========================
-[![Build Status](https://travis-ci.org/thephpleague/phpunit-coverage-listener.png)](https://travis-ci.org/thephpleague/phpunit-coverage-listener) [![Dependencies Status](https://depending.in/thephpleague/phpunit-coverage-listener.png)](http://depending.in/thephpleague/phpunit-coverage-listener) [![Coverage Status](https://coveralls.io/repos/thephpleague/phpunit-coverage-listener/badge.png?branch=master)](https://coveralls.io/r/thephpleague/phpunit-coverage-listener?branch=master) [![Latest Stable Version](https://poser.pugx.org/league/phpunit-coverage-listener/v/stable.png)](https://packagist.org/packages/league/phpunit-coverage-listener) [![Total Downloads](https://poser.pugx.org/league/phpunit-coverage-listener/downloads.png)](https://packagist.org/packages/league/phpunit-coverage-listener)
+# PHPUnit Coverage Listener
 
-PHPUnit Coverage Listener is a utility library that allow you to process the PHPUnit code-coverage information and send it into some remote location via cURL.
+[![Build Status](https://travis-ci.org/thephpleague/phpunit-coverage-listener.png)](https://travis-ci.org/thephpleague/phpunit-coverage-listener) [![Dependencies Status](https://depending.in/thephpleague/phpunit-coverage-listener.png)](http://depending.in/thephpleague/phpunit-coverage-listener) [![Coverage Status](https://coveralls.io/repos/thephpleague/phpunit-coverage-listener/badge.png?branch=master)](https://coveralls.io/r/thephpleague/phpunit-coverage-listener?branch=master) 
 
-The main goal of the PHPunit Coverage Listener package is to provide a mechanism that generate a payload data (from PHPUnit code-coverage information) named `coverage.json` and send it to remote location, with bellow structure (simplified) :
+[![Latest Stable Version](https://poser.pugx.org/league/phpunit-coverage-listener/v/stable.png)](https://packagist.org/packages/league/phpunit-coverage-listener) 
+
+[![Total Downloads](https://poser.pugx.org/league/phpunit-coverage-listener/downloads.png)](https://packagist.org/packages/league/phpunit-coverage-listener)
+
+PHPUnit Coverage Listener is a utility library that allow you to process the PHPUnit 
+code-coverage information and send it into some remote location via cURL.
+
+The main goal of the PHPunit Coverage Listener package is to provide a mechanism that 
+generate a payload data (from PHPUnit code-coverage information) named `coverage.json` 
+and send it to remote location, with the following (simplified) structure:
+
 ```json
 {
     "repo_token": "s3cr3th4sh",
@@ -34,7 +42,7 @@ The main goal of the PHPunit Coverage Listener package is to provide a mechanism
 }
 ```
 
-Then in the target server, you could accept the payload as follow (simplified) :
+Then in the target server, you could accept the payload as follows (simplified) :
 
 ```php
 <?php
@@ -51,12 +59,19 @@ header('Content-Type: application/json');
 die(json_encode(compact('success')));
 ```
 
-Above json data could be process furthermore to expose usefull information about your code-coverage information in a way that fit with your specific needs. [Coveralls](https://coveralls.io/) service would be a perfect example in this scenario.
+Above json data could then be processed further to expose information about your 
+code-coverage information in a way that fits with your specific needs. 
+
+[Coveralls](https://coveralls.io/) service would be a perfect example in this scenario.
+
+However, please note that as Coveralls supply their own submitter, the use case for
+this is probably now defunct.  This lib is much more useful in situations where you want
+to send coverage information to your own servers, say in a Jenkins build chain.
 
 Requirement
 -----------
 
-* PHP >= 5.3.3
+* PHP >= 5.6
 
 Install
 -------
@@ -64,13 +79,17 @@ Install
 Via Composer
 
 ```bash
-composer require league/phpunit-coverage-listener
+composer require-dev chippyash/phpunit-coverage-listener
 ```
 
 Basic Usage
 -----------
 
-Let's say you want to send a payload data for [Coveralls](https://coveralls.io/) each time your [Travis](http://travis-ci.org/) job successfully build. All you need to do is adding bellow section within your phpunit configuration that used by `.travis.yml` (mostly you wont need this in your development environment) :
+Let's say you want to send a payload data for [Coveralls](https://coveralls.io/) each 
+time your [Travis](http://travis-ci.org/) job successfully build. All you need to do 
+is adding bellow section within your phpunit configuration that used by `.travis.yml` 
+(mostly you wont need this in your development environment, and a phpunit.dev.xml is 
+supplied for you to run local tests.) :
 
 ```xml
 <logging>
@@ -103,15 +122,16 @@ Let's say you want to send a payload data for [Coveralls](https://coveralls.io/)
     </listener>
 </listeners>
 ```
-
-And thats it.
+The supplied phpunit.xml.dist is supplied as a model for you to copy and paste.
 
 Advance Usage
 -------------
 
-As you may noticed on previous section, in order to work properly, Listener class need to know several things. They are being passed from your phpunit configuration within listener arguments directive.
+As you may noticed on previous section, in order to work properly, the Listener class 
+needs to know several things. They are being passed from your phpunit configuration 
+within listener arguments directive.
 
-Bellow table describe each configuration options respectively : 
+The following table describe each configuration options respectively : 
 
 | Key Name | Value | Description
 | :---: | :---: | :---: |
@@ -121,15 +141,23 @@ Bellow table describe each configuration options respectively :
 | `repo_token` | `String` | Required |
 | `target_url` | `String` | Required |
 | `coverage_dir` | `String` | Required |
+| `coverage_file` | `String` | Optional |
+| `coverage_output` | `String` | Optional |
 | `send` | `bool` | Optional |
 
 ### printer
 
-This option contains `PrinterInterface` that will be used by Listener class in several points. In previous section, we set it to use `StdOut` printer that will print out any output informations directly into standard output. You could use your own printer class as long as it implements required interface.
+This option contains `PrinterInterface` that will be used by Listener class at 
+several points. In previous section, we set it to use `StdOut` printer that will 
+print out any output informations directly into standard output. You could use your 
+own printer class as long as it implements required interface.
 
 ### hook
 
-This option allow you to hook into Listener life-cycle. `HookInterface` has two method to be implemented : `beforeCollect` and `afterCollect`. It will receive `Collection` data, and then will alter or do something with the data on each hook point. In the previous example, `Travis` hook actually only contains bellow code :
+This option allow you to hook into Listener life-cycle. `HookInterface` has two 
+methods to be implemented : `beforeCollect` and `afterCollect`. It will receive 
+`Collection` data, and then will alter or do something with the data on each hook 
+point. In the previous example, `Travis` hook actually only contains :
 
 ```php
 public function beforeCollect(Collection $data)
@@ -150,27 +178,47 @@ public function beforeCollect(Collection $data)
 }
 ```
 
-Currently there are `Travis` and `Circle` hooks. You could register your own hook class that suit for your need as long as it implements required interface.
+Currently there are `Travis` and `Circle` hooks. You could register your own hook 
+class that suit for your need as long as it implements required interface.
 
 ### namespace
 
-Option `namespace` string could be passed into the Listener, so that the generated coverage information use "relative" name instead literal file path. For example, if your source is `src/My/Package/Resource.php`, and you passing `My\Package` as namespace option, generated file name within coverage payload data will be `My/Package/Resource.php`.
+Option `namespace` string could be passed into the Listener, so that the generated 
+coverage information use "relative" name instead literal file path. For example, if 
+your source is `src/My/Package/Resource.php`, and you passing `My\Package` as 
+namespace option, generated file name within coverage payload data will be 
+`My/Package/Resource.php`.
 
 ### repo_token
 
-This option could be anything. Timestamp? Coveralls account token? Jenkins build token? Its up to you. But it was still neccessary to supply this option into the Listener class.
+This option could be anything. Timestamp? Coveralls account token? Jenkins build 
+token? Its up to you. But it was still neccessary to supply this option into the 
+Listener class.
 
 ### target_url
 
-This option could be any valid url. For example, if you use Coveralls this option can be set to its REST endpoint : `https://coveralls.io/api/v1/jobs`.
+This option could be any valid url. For example, if you use Coveralls this option 
+can be set to its REST endpoint : `https://coveralls.io/api/v1/jobs`.
 
 ### coverage_dir
 
-The directory you specified here **must** be the same directory from which PHPUnit generate `coverage.xml` report. Listener will also outputing `coverage.json` within this directory, so ensure this directory is writable.
+The directory you specified here **must** be the same directory from which PHPUnit 
+generates the `coverage.xml` report. Listener will also outputting `coverage.json` 
+within this directory, so ensure this directory is writable.
 
+### coverage_file
+
+Optional name for the coverage file that is generated by PHPUnit.  Default is `coverage.xml`.
+
+### coverage_output
+
+Optional name for the output json file.  Default is `coverage.json`.
+ 
 ### send
 
-As default, this library purpose is to collect and generate code-coverage data then send those payload data into remote location. But if you want to only collect and generate the data, add bellow option :
+As default, this library purpose is to collect and generate code-coverage data then 
+send the data into remote location. But if you want to only collect and generate the 
+data, set this option :
 
 ```xml
 <element key="send">

@@ -1,7 +1,7 @@
 <?php namespace League\PHPUnitCoverageListener\Tests\Mocks;
 
 use League\PHPUnitCoverageListener\HookInterface;
-use League\PHPUnitCoverageListener\Collection;
+use Monad\Collection;
 
 /**
  * Mock Hook

@@ -21,9 +21,6 @@
         </blacklist>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src/League/PHPUnitCoverageListener</directory>
-            <exclude>
-              <!--<file>src/League/PHPUnitCoverageListener/Printer/StdOut.php</file>-->
-            </exclude>
         </whitelist>
     </filter>
 </phpunit>

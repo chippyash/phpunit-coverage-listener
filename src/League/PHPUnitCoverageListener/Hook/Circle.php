@@ -1,7 +1,7 @@
 <?php namespace League\PHPUnitCoverageListener\Hook;
 
 use League\PHPUnitCoverageListener\HookInterface;
-use League\PHPUnitCoverageListener\Collection;
+use Monad\Collection;
 
 /**
  * Circle Hook
@@ -22,8 +22,8 @@ class Circle implements HookInterface
         if (getenv('CIRCLECI') || isset($_ENV['CIRCLECI'])) {
             // And use circle config
             $circle_job_id = isset($_ENV['CIRCLE_BUILD_NUM']) ? $_ENV['CIRCLE_BUILD_NUM'] : getenv('CIRCLE_BUILD_NUM');
-            $data->set('service_name', 'circle-ci');
-            $data->set('service_job_id', $circle_job_id);
+            $data = $data->append(['service_name' => 'circle-ci'])
+                    ->append(['service_job_id' => $circle_job_id]);
         }
 
         return $data;

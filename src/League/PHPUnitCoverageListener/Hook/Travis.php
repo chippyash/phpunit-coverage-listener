@@ -1,7 +1,7 @@
 <?php namespace League\PHPUnitCoverageListener\Hook;
 
 use League\PHPUnitCoverageListener\HookInterface;
-use League\PHPUnitCoverageListener\Collection;
+use Monad\Collection;
 
 /**
  * Travis Hook
@@ -21,12 +21,12 @@ class Travis implements HookInterface
         // if it appears, then assign it respectively
         if (getenv('TRAVIS_JOB_ID') || isset($_ENV['TRAVIS_JOB_ID'])) {
             // Remove repo token
-            $data->remove('repo_token');
+            $data = $data->kDiff(new Collection(['repo_token' => '']));
 
             // And use travis config
             $travis_job_id = isset($_ENV['TRAVIS_JOB_ID']) ? $_ENV['TRAVIS_JOB_ID'] : getenv('TRAVIS_JOB_ID');
-            $data->set('service_name', 'travis-ci');
-            $data->set('service_job_id', $travis_job_id);
+            $data = $data ->append(['service_name' => 'travis-ci'])
+                ->append(['service_job_id' => $travis_job_id]);
         }
 
         return $data;

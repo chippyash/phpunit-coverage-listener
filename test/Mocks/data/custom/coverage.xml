@@ -2,33 +2,6 @@
 <coverage generated="1374862677">
   <project timestamp="1374862677">
     <package name="League\PHPUnitCoverageListener">
-      <file name="src/League/PHPUnitCoverageListener/Collection.php">
-        <class name="Collection" namespace="League\PHPUnitCoverageListener">
-          <metrics methods="8" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="12" elements="20" coveredelements="20"/>
-        </class>
-        <line num="29" type="method" name="__construct" crap="1" count="4"/>
-        <line num="31" type="stmt" count="4"/>
-        <line num="32" type="stmt" count="4"/>
-        <line num="39" type="method" name="all" crap="1" count="1"/>
-        <line num="41" type="stmt" count="1"/>
-        <line num="49" type="method" name="add" crap="1" count="1"/>
-        <line num="51" type="stmt" count="1"/>
-        <line num="52" type="stmt" count="1"/>
-        <line num="60" type="method" name="set" crap="1" count="1"/>
-        <line num="62" type="stmt" count="1"/>
-        <line num="63" type="stmt" count="1"/>
-        <line num="72" type="method" name="has" crap="1" count="1"/>
-        <line num="74" type="stmt" count="1"/>
-        <line num="82" type="method" name="remove" crap="1" count="1"/>
-        <line num="84" type="stmt" count="1"/>
-        <line num="85" type="stmt" count="1"/>
-        <line num="92" type="method" name="getIterator" crap="1" count="1"/>
-        <line num="94" type="stmt" count="1"/>
-        <line num="102" type="method" name="count" crap="1" count="2"/>
-        <line num="104" type="stmt" count="2"/>
-        <line num="107" type="stmt" count="1"/>
-        <metrics loc="106" ncloc="50" classes="1" methods="8" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="12" elements="20" coveredelements="20"/>
-      </file>
       <file name="src/League/PHPUnitCoverageListener/Listener.php">
         <class name="Listener" namespace="League\PHPUnitCoverageListener">
           <metrics methods="6" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="117" coveredstatements="8" elements="123" coveredelements="10"/>

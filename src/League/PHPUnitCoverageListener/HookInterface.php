@@ -1,6 +1,6 @@
 <?php namespace League\PHPUnitCoverageListener;
 
-use League\PHPUnitCoverageListener\Collection;
+use Monad\Collection;
 
 /**
  * PHPUnit hook interface

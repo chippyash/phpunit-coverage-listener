@@ -12,7 +12,7 @@
 >
     <testsuites>
         <testsuite name="PHPUnit Coverage Listener Test Suite">
-            <directory>./src/League/PHPUnitCoverageListener/Tests/</directory>
+            <directory>./test/</directory>
         </testsuite>
     </testsuites>
     <filter>
@@ -21,11 +21,44 @@
         </blacklist>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src/League/PHPUnitCoverageListener</directory>
-            <exclude>
-              <file>src/League/PHPUnitCoverageListener/Printer/StdOut.php</file>
-              <directory suffix=".php">src/League/PHPUnitCoverageListener/Tests</directory>
-              <directory suffix=".php">src/League/PHPUnitCoverageListener/Tests/Mocks</directory>
-            </exclude>
         </whitelist>
     </filter>
+    <logging>
+        <log type="coverage-clover" target="/tmp/clover.xml"/>
+    </logging>
+    <listeners>
+        <listener class="League\PHPUnitCoverageListener\Listener">
+            <arguments>
+                <array>
+                    <element key="printer">
+                        <object class="League\PHPUnitCoverageListener\Printer\StdOut"/>
+                    </element>
+                    <element key="hook">
+                        <object class="League\PHPUnitCoverageListener\Hook\Travis"/>
+                    </element>
+                    <element key="namespace">
+                        <string>League\PHPUnitCoverageListener</string>
+                    </element>
+                    <element key="repo_token">
+                        <string>YourRepoToken</string>
+                    </element>
+                    <element key="target_url">
+                        <string>https://coveralls.io/api/v1/jobs</string>
+                    </element>
+                    <element key="coverage_dir">
+                        <string>/tmp</string>
+                    </element>
+                    <element key="coverage_file">
+                        <string>clover.xml</string>
+                    </element>
+                    <element key="coverage_output">
+                        <string>coverage.json</string>
+                    </element>
+                    <element key="send">
+                        <integer>0</integer>
+                    </element>
+                </array>
+            </arguments>
+        </listener>
+    </listeners>
 </phpunit>

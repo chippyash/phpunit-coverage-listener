@@ -1,9 +1,6 @@
 <?php namespace League\PHPUnitCoverageListener;
 
-use League\PHPUnitCoverageListener\ListenerInterface;
-use League\PHPUnitCoverageListener\PrinterInterface;
-use League\PHPUnitCoverageListener\HookInterface;
-use League\PHPUnitCoverageListener\Collection;
+use Monad\Collection;
 use Symfony\Component\Yaml\Yaml;
 use \SimpleXMLElement;
 
@@ -35,7 +32,9 @@ class Listener implements ListenerInterface
      * Listener constructor
      *
      * @param array Argument that sent from phpunit.xml
-     * @param bool Boot flag 
+     * @param bool Boot flag
+     *
+     * @throws RuntimeException
      */
     public function __construct($args = array(), $boot = true)
     {
@@ -55,6 +54,8 @@ class Listener implements ListenerInterface
      * Main handler
      *
      * @param array
+     *
+     * @throws RuntimeException
      */
     public function handle($args)
     {
@@ -97,9 +98,12 @@ class Listener implements ListenerInterface
     }
 
     /**
-     * Main api for collecting code-coverage information and write it into json payload
+     * Main api for collecting code-coverage information and write it into json
+     * payload
      *
-     * @param array 
+     * @param array
+     *
+     * @throws RuntimeException
      */
     public function collectAndWriteCoverage($args)
     {
@@ -112,10 +116,11 @@ class Listener implements ListenerInterface
                 unset($hook);
             }
 
+            $sep = DIRECTORY_SEPARATOR;
             // Get the realpath coverage directory
             $coverage_dir = realpath($coverage_dir);
-            $coverage_file = $coverage_dir.DIRECTORY_SEPARATOR.self::COVERAGE_FILE;
-            $coverage_output = $coverage_dir.DIRECTORY_SEPARATOR.self::COVERAGE_OUTPUT;
+            $coverage_file = "{$coverage_dir}{$sep}" . (isset($coverage_file)? $coverage_file : self::COVERAGE_FILE);
+            $coverage_output = "{$coverage_dir}{$sep}" . (isset($coverage_output) ? $coverage_output :self::COVERAGE_OUTPUT);
 
             // Get the coverage information
             if (is_dir($coverage_dir) && is_file($coverage_file)) {
@@ -124,19 +129,25 @@ class Listener implements ListenerInterface
                 $coverage = new SimpleXMLElement($xml);
 
                 // Prepare the coveralls payload
-                $data = $this->collect($coverage, $args);
+                $data = $this->unserialize($this->collect($coverage, $args)->toArray());
 
                 // Write the coverage output
-                $this->printer->out('Writing coverage output...');
-                file_put_contents($coverage_output, json_encode($data->all(), JSON_NUMERIC_CHECK));
+                $this->printer->out('Writing coverage output to ' . $coverage_output);
+                file_put_contents($coverage_output, json_encode($data, JSON_NUMERIC_CHECK));
+                return;
             }
+
+            $this->printer->out("Cannot locate coverage file at {$coverage_file}");
         }
     }
 
     /**
      * Main api for collecting code-coverage information
      *
-     * @param array Contains repo secret hash, target url, coverage directory and optional Namespace
+     * @param array Contains repo secret hash, target url, coverage directory and
+     *                       optional Namespace
+     *
+     * @throws RuntimeException
      */
     public function collectAndSendCoverage($args)
     {
@@ -146,9 +157,11 @@ class Listener implements ListenerInterface
         if ($this->valid($args)) {
             extract($args);
 
+            $sep = DIRECTORY_SEPARATOR;
             // Get the realpath coverage directory
             $coverage_dir = realpath($coverage_dir);
-            $coverage_output = $coverage_dir.DIRECTORY_SEPARATOR.self::COVERAGE_OUTPUT;
+            $coverage_output = "{$coverage_dir}{$sep}" . (isset($coverage_output) ? $coverage_output :self::COVERAGE_OUTPUT);
+
 
             // Send it!
             $this->printer->out('Sending coverage output...');
@@ -196,6 +209,7 @@ class Listener implements ListenerInterface
      * Printer validator
      *
      * @param array
+     *
      * @throws RuntimeException
      */
     protected function ensurePrinter($args)
@@ -215,7 +229,10 @@ class Listener implements ListenerInterface
      *
      * @param SimpleXMLElement Coverage report from PHPUnit
      * @param array
+     *
      * @return Collection
+     *
+     * @throws RuntimeException
      */
     protected function collect(SimpleXMLElement $coverage, $args = array())
     {
@@ -223,9 +240,9 @@ class Listener implements ListenerInterface
 
     	$data = new Collection(array(
             'repo_token' => $repo_token,
-            'source_files' => array(),
+            'source_files' => serialize([]),
             'run_at' => gmdate('Y-m-d H:i:s -0000'),
-            'git' => $this->collectFromGit()->all(),
+            'git' => serialize($this->collectFromGit()->toArray()),
         ));
 
  		// Before collect hook
@@ -234,7 +251,7 @@ class Listener implements ListenerInterface
      	}
 
         // Prepare temporary source_files holder
-        $sourceArray = new Collection();
+        $sourceArray = new Collection([], 'string');
 
         if (count($coverage->project->package) > 0) {
             // Iterate over the package
@@ -243,9 +260,11 @@ class Listener implements ListenerInterface
                 foreach ($package->file as $packageFile) {
                     $this->printer->printOut('Checking:'.$packageFile['name']);
 
-                    $sourceArray->add(array(
-                        md5($packageFile['name']) => $this->collectFromFile($packageFile, $namespace)
-                    ));
+                    $sourceArray = $sourceArray->append(
+                        [
+                            md5($packageFile['name']) => $this->collectFromFile($packageFile, $namespace)
+                        ]
+                    );
                 }
             }
         }
@@ -266,7 +285,7 @@ class Listener implements ListenerInterface
 
         // Last, pass the source information it it contains any information
         if ($sourceArray->count() > 0) {
-            $data->set('source_files', array_values($sourceArray->all()));
+            $data = $data->append(['source_files' => serialize(array_values($sourceArray->toArray()))]);
         }
 
  		// After collect hook
@@ -282,8 +301,10 @@ class Listener implements ListenerInterface
      *
      * @param SimpleXMLElement contains coverage information
      * @param string Optional file namespace identifier
-     * @throws RuntimeException
+     *
      * @return array contains code-coverage data with keys as follow : name, source, coverage
+     *
+     * @throws RuntimeException
      */
     protected function collectFromFile(SimpleXMLElement $file, $namespace = '')
     {
@@ -347,7 +368,7 @@ class Listener implements ListenerInterface
             }
         }
 
-        return compact('name', 'source', 'coverage');
+        return serialize(compact('name', 'source', 'coverage'));
     }
 
     /**
@@ -358,7 +379,7 @@ class Listener implements ListenerInterface
     public function collectFromGit()
     {
         // Initial git data
-        $git = new Collection();
+        $git = new Collection([], 'string');
 
         $gitDirectory = $this->getDirectory().DIRECTORY_SEPARATOR.self::GIT_DIRECTORY;
 
@@ -376,7 +397,7 @@ class Listener implements ListenerInterface
             // @codeCoverageIgnoreEnd
 
             // Assign branch information
-            $git->set('branch', $branch);
+            $git = $git->append(['branch' => $branch]);
 
             // Get log information
             $logRaw = self::execute('cd '.$this->getDirectory().';git log -1');
@@ -395,8 +416,8 @@ class Listener implements ListenerInterface
            
 
             // Assign Head information
-            $git->set('head', compact('id', 'author_name', 'author_email', 
-                            'committer_name', 'committer_email', 'message'));
+            $git = $git->append(['head' => serialize(compact('id', 'author_name', 'author_email',
+                            'committer_name', 'committer_email', 'message'))]);
 
             // Get remotes information
             $remotes = array();
@@ -414,10 +435,28 @@ class Listener implements ListenerInterface
             });
 
             // Assign Remotes information
-            $git->set('remotes', array_values($remotes));
+            $git = $git->append(['remotes' => serialize(array_values($remotes))]);
         }
 
         return $git;
+    }
+
+    /**
+     * Unserialize the data Collection
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function unserialize(array $data)
+    {
+        $unserialized = [];
+        foreach ($data as $key => $value) {
+            $v = @\unserialize($value);
+            $unserialized[$key] = ($v === false ? $value : (is_array($v) ? $this->unserialize($v) : $v));
+        }
+
+        return $unserialized;
     }
 
     /**

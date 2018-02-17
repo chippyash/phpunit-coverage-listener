@@ -1,6 +1,6 @@
 <?php namespace League\PHPUnitCoverageListener\Tests\Hook;
 
-use League\PHPUnitCoverageListener\Collection;
+use Monad\Collection;
 use League\PHPUnitCoverageListener\HookInterface;
 use League\PHPUnitCoverageListener\Hook\Circle;
 use \PHPUnit_Framework_TestCase;
@@ -32,21 +32,21 @@ class CircleTest extends PHPUnit_Framework_TestCase
 			'repo_token' => 's3cr3t',
 		));
 
-		$this->assertTrue($data->has('repo_token'));
+		$this->assertTrue($data->offsetExists('repo_token'));
 
 		$circle = new Circle();
 
 		$data = $circle->beforeCollect($data);
 
 		// Repo token will stay
-		$this->assertTrue($data->has('repo_token'));
+		$this->assertTrue($data->offsetExists('repo_token'));
 
 		// And Circle specific keys will be added
 		// with above data assigned respectively
-		$this->assertTrue($data->has('service_name'));
-		$this->assertTrue($data->has('service_job_id'));
+		$this->assertTrue($data->offsetExists('service_name'));
+		$this->assertTrue($data->offsetExists('service_job_id'));
 
-		$values = $data->all();
+		$values = $data->toArray();
 
 		$this->assertEquals('circle-ci', $values['service_name']);
 		$this->assertEquals('some-fake-id', $values['service_job_id']);
@@ -63,13 +63,13 @@ class CircleTest extends PHPUnit_Framework_TestCase
 			'repo_token' => 's3cr3t',
 		));
 
-		$this->assertTrue($data->has('repo_token'));
+		$this->assertTrue($data->offsetExists('repo_token'));
 
 		// Nothing happens on after callback
 		$circle = new Circle();
 
 		$data = $circle->afterCollect($data);
 
-		$this->assertTrue($data->has('repo_token'));
+		$this->assertTrue($data->offsetExists('repo_token'));
 	}
 }

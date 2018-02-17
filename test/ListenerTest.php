@@ -1,7 +1,6 @@
-<?php namespace League\PHPUnitCoverageListener\Tests;
+<?php
+namespace League\PHPUnitCoverageListener\Tests;
 
-use League\PHPUnitCoverageListener\ListenerInterface;
-use League\PHPUnitCoverageListener\PrinterInterface;
 use League\PHPUnitCoverageListener\Listener;
 use League\PHPUnitCoverageListener\Printer\ArrayOut;
 use League\PHPUnitCoverageListener\Hook\Travis;
@@ -99,10 +98,9 @@ class ListenerTest extends PHPUnit_Framework_TestCase
 		$this->assertContains(' * Checking:', $output[0]);
 		$this->assertContains(' * Checking:', $output[1]);
 		$this->assertContains(' * Checking:', $output[2]);
-		$this->assertContains(' * Checking:', $output[3]);
-		$this->assertContains('Writing coverage output...', $output[4]);
-		$this->assertContains('Sending coverage output...', $output[5]);
-		$this->assertContains(' * cURL Output:', $output[6]);
-		$this->assertContains(' * cURL Result:', $output[7]);
+		$this->assertContains('Writing coverage output', $output[3]);
+		$this->assertContains('Sending coverage output...', $output[4]);
+		$this->assertContains(' * cURL Output:', $output[5]);
+		$this->assertContains(' * cURL Result:', $output[6]);
 	}
 }
